@@ -1,0 +1,195 @@
+#+Title: Evaluating Navigational RDF Queries over Web
+#+Author: Baier, Daroch, Reutter and Vrgoc
+#+Email: {jabaier,jreutter,dvrgoc}@ing.puc.cl, ddaroch@uc.cl
+#+Web: doge.ing.puc.cl/Dietrich/Slides/evaluating_nav_queries
+#+Language: en
+#+Date: 2017-07-04
+
+
+* Setup                                                            :noexport:
+#+REVEAL_ROOT: http://localhost:8000
+# #+REVEAL_ROOT: file:///home/dietr1ch/Public/Slides/evaluating_nav_queries/
+# #+REVEAL_ROOT: https://doge.ing.puc.cl/Dietr1ch/Slides/evaluating_nav_queries/
+#+REVEAL_HEAD_PREAMBLE: <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js'></script>
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (org-reveal-export-to-html))
+# eval: (add-hook 'after-save-hook (org-pandoc-export-to-beamer-pdf))
+# End:
+
+
+* Config                                                          :noexport:
+
+** Numbering
+#+OPTIONS: toc:nil
+# Remove numbering from sections and subsections
+#+OPTIONS: num:nil
+
+** Reveal
+#+REVEAL_HLEVEL: 2
+#+REVEAL_SPEED: 2
+#+OPTIONS: reveal_slide_number:h.v
+
+# Adding plugings without their dependencies might break your slides
+
+#+REVEAL_EXTRA_JS: { src: 'plugin/math/math.js', async: true }, { src: 'plugin/zoom-js/zoom.js', async: true }
+# #+REVEAL_PLUGINS: (highlight markdown notes reveal-progress)
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+
+*** Looks
+ #+REVEAL_TRANS: slide
+ # Theme (black moon night blood)
+ #+REVEAL_THEME: black
+ # Target 1366x768, 16:9 and not far from 1024x768 widely used on projectors
+ #+OPTIONS: reveal_width:1366 reveal_height:768
+ # #+REVEAL_EXTRA_CSS: custom.css
+*** Reveal
+ #+OPTIONS: reveal_center:t
+ #+OPTIONS: reveal_progress:t
+ #+OPTIONS: reveal_history:nil
+ #+OPTIONS: reveal_control:t
+ #+OPTIONS: reveal_rolling_links:t
+ #+OPTIONS: reveal_keyboard:t
+ #+OPTIONS: reveal_overview:nil
+
+** Beamer
+#+BEAMER_THEME: Rochester [height=20pt]
+# #+LATEX_HEADER: \usepackage{verbatim}
+
+# #+OPTIONS: H:2
+# #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+
+
+* Introduction
+#  :PROPERTIES:
+#  :reveal_background: images/rdf.png
+#  :reveal_background_trans: slide
+#  :END:
+
+** Motivation
+*** Sharing across databases
+    #+ATTR_REVEAL: :frag (appear)
+		- Information on relational databases is hard to share
+      #+ATTR_REVEAL: :frag (appear)
+			- Different format, schema and access control
+			- Sharing problems cause data to become outdated
+		- A different approach is needed
+
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+Relational databases are a closed source of information, which makes it hard to
+share
+
+Duplicating the shared data on all databases does not makes much sense
+ and it can easily become stale as it won't be maintained by the real owner
+#+END_NOTES
+#+LaTeX: }
+
+*** A Web-like approach
+		The Web provides linked documents with human readable information
+
+    #+ATTR_REVEAL: :frag (appear)
+		- Documents are linked
+			- Real owners can update the data
+			- Documents can be navigated across different servers
+		- It's distributed
+			- Can scale-out
+
+** Linked Data
+*** One Database to rule them all
+		LD movement proposes using a graph made of IRIs and strings
+
+    #+ATTR_REVEAL: :frag (appear)
+		- Uses links to data instead of copies
+		- Uses IRIs as data identifiers
+		- Uses IRIs as relation identifiers
+      #+ATTR_REVEAL: :frag (appear)
+			- And suggests collection of relations to use
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+Following the web, LD proposes using a graph, but instead of documents and
+links, it explicitly uses identifiers as things rather than only identifiers of
+documents
+#+END_NOTES
+#+LaTeX: }
+
+** RDF
+*** TODO Resource Description Framework
+		Defines the layout of the data
+
+    #+ATTR_REVEAL: :frag (appear)
+		- An RDF triple is a tuple $(S, P, O)$
+			- $Subject$   is an IRI representing something
+			- $Predicate$ is an IRI representing a relation
+			- $Object$    might be an IRI or a string of data
+		- It's essentially the unit of information
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+RDF is a specification on of the data layout
+An RDF triple is the essential unit of information, it relates some objects
+using a predicate.
+A key point is using IRIs and having a standardized set of IRIs to do so
+#+END_NOTES
+#+LaTeX: }
+
+** SPARQL
+*** SPARQL query language
+		A SQL-like language for querying graph databases
+
+    #+ATTR_REVEAL: :frag (appear)
+		- Servers provide
+			- An SPARQL endpoint to consume or update RDF data
+			- A store for the data
+		- Querying multiple servers is hard
+			- Query federation allows specifying multiple servers
+				- Queries are hard to write
+				- Lacks discoverability
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+SPARQL is a query language that mimics SQL to query graphs
+#+END_NOTES
+#+LaTeX: }
+
+* Navigational Queries
+** Navigation
+*** Searching data the way you browse for it
+
+** Automata
+*** Definition
+		A SQL-like language for querying graph databases
+
+    #+ATTR_REVEAL: :frag (appear)
+		- Servers provide
+*** Heuristic
+** Search
+*** Advantages
+**** Shortest path proves relation
+*** A* speed up using query information
+** Implementation details
+*** Heuristic
+** Evaluation
+*** Experiment setup
+
+
+* Old                                                             :noexport:
+
+#+BEGIN_NOTES
+Imagine you are given a flash drive with the contents of the internet, but at
+the cost of not having internet anymore. Would that be useful?
+Great part of the value of the internet is on being able to access living
+information. Most of the information on that flash drive will become irrelevant
+or stale
+Databases face a similar problem, they don't usually have access to the outside
+world. 
+#+END_NOTES
+
+
+** Questions
+** Extra
+** Thanks
+
