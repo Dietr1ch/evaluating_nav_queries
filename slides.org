@@ -5,7 +5,6 @@
 #+Language: en
 #+Date: 2017-07-04
 
-
 * Setup                                                            :noexport:
 #+REVEAL_ROOT: http://localhost:8000
 # #+REVEAL_ROOT: file:///home/dietr1ch/Public/Slides/evaluating_nav_queries/
@@ -144,8 +143,12 @@ review of the schemas compatibility. No conversions are needed.
 #+LaTeX: }
 
 *** TODO An example
-#+BEGIN_SRC rdf
+#+BEGIN_SRC nt
 namespace ht: https://ht.acm.org/rdf/
+
+<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/creator> "Dave Beckett" .
+<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/creator> "Art Barstow" .
+<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/publisher> <http://www.w3.org/> .
 #+END_SRC
 
 *** Why RDF?
@@ -155,14 +158,20 @@ namespace ht: https://ht.acm.org/rdf/
 		- Database can be sharded
 
 ** Querying Linked Data
+*** Databases need to be queried
+		A data model is not enough
+    #+ATTR_REVEAL: :frag (appear)
+		- Different databases can be trivially joined
+			- No schema compatibility problems or conversions.
 
 #+BEGIN_NOTES
 RDF is a data model for storing information, but having information is worthless
 without a way to query it
 So far LD proposes a model for storing information in a distributed fashion.
 #+END_NOTES
-*** SPARQL query language
-		A SQL-like language for querying graph databases
+*** TODO SPARQL
+		A SQL-like language for querying and modifying graph databases
+		Queries are RDF graphs that allow variables and restrictions
 
     #+ATTR_REVEAL: :frag (appear)
 		- Servers provide
@@ -172,10 +181,15 @@ So far LD proposes a model for storing information in a distributed fashion.
 			- Query federation allows specifying multiple servers
 				- Queries are hard to write
 				- Lacks discoverability
+		- Subgraph matching is NP-complete
+			- Exposing SPARQL endpoints is troublesome
 
 #+LaTeX: \note{
 #+BEGIN_NOTES
-SPARQL is a query language that mimics SQL to query graphs
+SPARQL is a language for querying graphs, it looks like SQL and relies on
+subgraph matching specifying queries.
+
+SPARQL servers provide endpoints (services) to interact
 #+END_NOTES
 #+LaTeX: }
 
@@ -198,13 +212,12 @@ SPARQL is a query language that mimics SQL to query graphs
 ** TODO Evaluation
 *** TODO Experiment setup
 
-
 * Questions
 * Extra
 ** TODO Evaluation
 *** TODO Setup
 *** TODO Experiments
-Experiments are available on the [[./experiments.html][experiment slides]]
+Experiments are available on the [[experiments.html][experiment slides]]
 * Thanks
 * Old                                                             :noexport:
 
