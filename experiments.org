@@ -1,0 +1,79 @@
+#+Title: Evaluating Navigational RDF Queries over Web - Experiments
+#+Author: Baier, Daroch, Reutter and Vrgoc
+#+Email: {jabaier,jreutter,dvrgoc}@ing.puc.cl, ddaroch@uc.cl
+#+Web: doge.ing.puc.cl/Dietrich/Slides/evaluating_nav_queries/experiments
+#+Language: en
+#+Date: 2017-07-04
+
+
+* Setup                                                            :noexport:
+#+REVEAL_ROOT: http://localhost:8000
+# #+REVEAL_ROOT: file:///home/dietr1ch/Public/Slides/evaluating_nav_queries/
+# #+REVEAL_ROOT: https://doge.ing.puc.cl/Dietr1ch/Slides/evaluating_nav_queries/
+#+REVEAL_HEAD_PREAMBLE: <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js'></script>
+
+# Local Variables:
+# eval: (add-hook 'after-save-hook (org-reveal-export-to-html))
+# eval: (add-hook 'after-save-hook (org-pandoc-export-to-beamer-pdf))
+# End:
+
+
+* Config                                                          :noexport:
+#+STARTUP: overview
+
+** Numbering
+#+OPTIONS: toc:nil
+# Remove numbering from sections and subsections
+#+OPTIONS: num:nil
+
+** Reveal
+#+REVEAL_HLEVEL: 2
+#+REVEAL_SPEED: 2
+#+OPTIONS: reveal_slide_number:h.v
+
+# Adding plugings without their dependencies might break your slides
+
+#+REVEAL_EXTRA_JS: { src: 'plugin/math/math.js', async: true }, { src: 'plugin/zoom-js/zoom.js', async: true }
+# #+REVEAL_PLUGINS: (highlight markdown notes reveal-progress)
+#+REVEAL_PLUGINS: (highlight markdown notes)
+
+
+*** Looks
+ #+REVEAL_TRANS: slide
+ # Theme (black moon night blood)
+ #+REVEAL_THEME: black
+ # Target 1366x768, 16:9 and not far from 1024x768 widely used on projectors
+ #+OPTIONS: reveal_width:1366 reveal_height:768
+ # #+REVEAL_EXTRA_CSS: custom.css
+*** Reveal
+ #+OPTIONS: reveal_center:t
+ #+OPTIONS: reveal_progress:t
+ #+OPTIONS: reveal_history:nil
+ #+OPTIONS: reveal_control:t
+ #+OPTIONS: reveal_rolling_links:t
+ #+OPTIONS: reveal_keyboard:t
+ #+OPTIONS: reveal_overview:nil
+
+** Beamer
+#+BEAMER_THEME: Rochester [height=20pt]
+# #+LATEX_HEADER: \usepackage{verbatim}
+
+# #+OPTIONS: H:2
+# #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+
+
+* Introduction
+  :PROPERTIES:
+  :reveal_background: images/lod-1080-fade.png
+  :reveal_background_trans: slide
+  :END:
+
+** Query 1
+*** Query name
+		Query description
+*** Query name - Execution
+		Answers v/s expansions
+*** Query name - Memory
+		Answers v/s memory
+*** Query name - Time
+		Answers v/s time

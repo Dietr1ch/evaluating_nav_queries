@@ -19,6 +19,7 @@
 
 
 * Config                                                          :noexport:
+#+STARTUP: overview
 
 ** Numbering
 #+OPTIONS: toc:nil
@@ -62,17 +63,17 @@
 
 
 * Introduction
-#  :PROPERTIES:
-#  :reveal_background: images/rdf.png
-#  :reveal_background_trans: slide
-#  :END:
+  :PROPERTIES:
+  :reveal_background: images/lod-1080-fade.png
+  :reveal_background_trans: slide
+  :END:
 
 ** Motivation
 *** Sharing across databases
     #+ATTR_REVEAL: :frag (appear)
 		- Information on relational databases is hard to share
       #+ATTR_REVEAL: :frag (appear)
-			- Different format, schema and access control
+			- Different format, schema and access policies
 			- Sharing problems cause data to become outdated
 		- A different approach is needed
 
@@ -116,27 +117,50 @@ documents
 #+END_NOTES
 #+LaTeX: }
 
-** RDF
-*** TODO Resource Description Framework
-		Defines the layout of the data
+*** Resource Description Framework
+		Defines the layout of the data.
+    Data is meant to be retrieved from the internet, so the open world
+    assumption must be used
 
     #+ATTR_REVEAL: :frag (appear)
 		- An RDF triple is a tuple $(S, P, O)$
 			- $Subject$   is an IRI representing something
 			- $Predicate$ is an IRI representing a relation
 			- $Object$    might be an IRI or a string of data
-		- It's essentially the unit of information
+		  - It's essentially the unit of information
 
 #+LaTeX: \note{
 #+BEGIN_NOTES
 RDF is a specification on of the data layout
 An RDF triple is the essential unit of information, it relates some objects
 using a predicate.
-A key point is using IRIs and having a standardized set of IRIs to do so
+
+What is really interesting about RDF, is that IRIs become identifiers for
+the data, this enables identifiers to be shared across databases, and also to
+have a common vocabulary on the relations.
+This change allows different databases to be combined without the need for human
+review of the schemas compatibility. No conversions are needed.
 #+END_NOTES
 #+LaTeX: }
 
-** SPARQL
+*** TODO An example
+#+BEGIN_SRC rdf
+namespace ht: https://ht.acm.org/rdf/
+#+END_SRC
+
+*** Why RDF?
+    #+ATTR_REVEAL: :frag (appear)
+		- Different databases can be trivially joined
+			- No schema compatibility problems or conversions.
+		- Database can be sharded
+
+** Querying Linked Data
+
+#+BEGIN_NOTES
+RDF is a data model for storing information, but having information is worthless
+without a way to query it
+So far LD proposes a model for storing information in a distributed fashion.
+#+END_NOTES
 *** SPARQL query language
 		A SQL-like language for querying graph databases
 
@@ -156,26 +180,32 @@ SPARQL is a query language that mimics SQL to query graphs
 #+LaTeX: }
 
 * Navigational Queries
-** Navigation
-*** Searching data the way you browse for it
-
-** Automata
-*** Definition
+** TODO Navigation
+*** TODO Searching data the way you browse for it
+** TODO Automata
+*** TODO Definition
 		A SQL-like language for querying graph databases
 
     #+ATTR_REVEAL: :frag (appear)
 		- Servers provide
-*** Heuristic
-** Search
-*** Advantages
+*** TODO Heuristic
+** TODO Search
+*** TODO Advantages
 **** Shortest path proves relation
-*** A* speed up using query information
-** Implementation details
-*** Heuristic
-** Evaluation
-*** Experiment setup
+*** TODO A* speed up using query information
+** TODO Implementation details
+*** TODO Heuristic
+** TODO Evaluation
+*** TODO Experiment setup
 
 
+* Questions
+* Extra
+** TODO Evaluation
+*** TODO Setup
+*** TODO Experiments
+Experiments are available on the [[./experiments.html][experiment slides]]
+* Thanks
 * Old                                                             :noexport:
 
 #+BEGIN_NOTES
@@ -187,9 +217,3 @@ or stale
 Databases face a similar problem, they don't usually have access to the outside
 world. 
 #+END_NOTES
-
-
-** Questions
-** Extra
-** Thanks
-
