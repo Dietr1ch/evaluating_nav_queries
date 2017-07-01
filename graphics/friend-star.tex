@@ -1,0 +1,20 @@
+\documentclass[tikz,convert={outfile=friend-star.png}]{standalone}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{shapes.multipart}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+
+\begin{document}
+
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto, red, node distance=4.5cm, scale=1, transform shape, every text node part/.style={align=center}]
+  \tikzstyle{every state}=[align=center]
+
+	\node[initial,state, accepting]   (P0)               {$X$};
+
+	\path (P0) edge  [loop right]   node {$friend$}  (P0);
+\end{tikzpicture}
+
+\end{document}

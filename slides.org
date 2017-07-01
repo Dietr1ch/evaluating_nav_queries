@@ -5,7 +5,10 @@
 #+Language: en
 #+Date: 2017-07-04
 
+* Tasks :noexport:
+** TODO check if the RDF Subject can be a String of data
 * Setup                                                            :noexport:
+#+SEQ_TODO: TODO REVIEW | DONE
 #+REVEAL_ROOT: http://localhost:8000
 # #+REVEAL_ROOT: file:///home/dietr1ch/Public/Slides/evaluating_nav_queries/
 # #+REVEAL_ROOT: https://doge.ing.puc.cl/Dietr1ch/Slides/evaluating_nav_queries/
@@ -117,16 +120,16 @@ documents
 #+LaTeX: }
 
 *** Resource Description Framework
-		Defines the layout of the data.
-    Data is meant to be retrieved from the internet, so the open world
-    assumption must be used
+		Defines the layout of the data
 
     #+ATTR_REVEAL: :frag (appear)
 		- An RDF triple is a tuple $(S, P, O)$
-			- $Subject$   is an IRI representing something
+			- $Subject$   is an IRI or a string
 			- $Predicate$ is an IRI representing a relation
-			- $Object$    might be an IRI or a string of data
+			- $Object$    is an IRI or a string
 		  - It's essentially the unit of information
+		- Data is meant to be retrieved from the internet
+			- Open-world assumption must be used
 
 #+LaTeX: \note{
 #+BEGIN_NOTES
@@ -142,13 +145,15 @@ review of the schemas compatibility. No conversions are needed.
 #+END_NOTES
 #+LaTeX: }
 
-*** TODO An example
-#+BEGIN_SRC nt
-namespace ht: https://ht.acm.org/rdf/
+*** An example
+#+BEGIN_SRC txt
+prefix ht: <https://ht.acm.org/rdf/>
+prefix dc: <http://purl.org/dc/elements/1.1/>
+prefix sw: <http://www.w3.org/2001/sw/>
 
-<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/creator> "Dave Beckett" .
-<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/creator> "Art Barstow" .
-<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/elements/1.1/publisher> <http://www.w3.org/> .
+sw:RDFCore/ntriples dc:creator   "Dave Beckett"       .
+sw:RDFCore/ntriples dc:creator   "Art Barstow"        .
+sw:RDFCore/ntriples dc:publisher <http://www.w3.org/> .
 #+END_SRC
 
 *** Why RDF?
@@ -158,32 +163,28 @@ namespace ht: https://ht.acm.org/rdf/
 		- Database can be sharded
 
 ** Querying Linked Data
-*** Databases need to be queried
-		A data model is not enough
-    #+ATTR_REVEAL: :frag (appear)
-		- Different databases can be trivially joined
-			- No schema compatibility problems or conversions.
+*** A data model is not enough
+		Databases must be queried to be useful
 
+#+LaTeX: \note{
 #+BEGIN_NOTES
 RDF is a data model for storing information, but having information is worthless
 without a way to query it
 So far LD proposes a model for storing information in a distributed fashion.
 #+END_NOTES
-*** TODO SPARQL
+#+LaTeX: }
+
+
+*** SPARQL
 		A SQL-like language for querying and modifying graph databases
-		Queries are RDF graphs that allow variables and restrictions
 
     #+ATTR_REVEAL: :frag (appear)
-		- Servers provide
+		- A query language
+			- Queries are RDF graphs with variables and restrictions
+			- Answers are computed by pattern matching
+		- SPARQL servers provide
 			- An SPARQL endpoint to consume or update RDF data
 			- A store for the data
-		- Querying multiple servers is hard
-			- Query federation allows specifying multiple servers
-				- Queries are hard to write
-				- Lacks discoverability
-		- Subgraph matching is NP-complete
-			- Exposing SPARQL endpoints is troublesome
-
 #+LaTeX: \note{
 #+BEGIN_NOTES
 SPARQL is a language for querying graphs, it looks like SQL and relies on
@@ -193,31 +194,133 @@ SPARQL servers provide endpoints (services) to interact
 #+END_NOTES
 #+LaTeX: }
 
-* Navigational Queries
-** TODO Navigation
-*** TODO Searching data the way you browse for it
-** TODO Automata
-*** TODO Definition
-		A SQL-like language for querying graph databases
+
+*** REVIEW Problems with SPARQL
 
     #+ATTR_REVEAL: :frag (appear)
-		- Servers provide
+		- Querying multiple servers is hard
+			- Query federation allows specifying multiple servers
+				- Lacks discoverability
+				- Queries are harder to write
+		- Computation is done completely server-side
+			- Exposing SPARQL endpoints is troublesome
+			- Queries can be hard
+				- Subgraph matching is NP-complete
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+SPARQL has a few problems.
+
+Servers must handle too much of the complexity as the only task for clients is
+to send the query and receive the final answer.
+#+END_NOTES
+#+LaTeX: }
+
+* Navigational Queries
+** TODO Navigation
+*** Searching data the way you browse for it
+    #+ATTR_REVEAL: :frag (appear)
+		- You don't know which server has the answer
+			- From a starting point you follow links onto your answers
+		- Servers just offer data
+			- You do the computation and ask for data on the fly
+		- You don't know whether you see all the data
+			- Open-world semantics are intrinsic
+			- You probably can't have all of it
+
+*** REVIEW Property Paths
+		Property paths allow expressing composed relations using regular expressions
+    over IRIs and their inverses
+
+    #+ATTR_REVEAL: :frag (appear)
+		- Easier to compute than general patterns
+		- SPARQL supports them too
+			- But lacks the discoverability they could have
+			- Patterns can prove the same relation in many ways
+				- All proofs are usually too much
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+
+Servers must handle too much of the complexity as the only task for clients is
+to send the query and receive the final answer.
+#+END_NOTES
+#+LaTeX: }
+
+
+*** TODO Property Path examples
+
+#+BEGIN_LaTeX
+\begin{align*}
+(successor)^*&  \\
+(directed \cdot directed^{-})^*& \cdot name  \\
+(director^{-} \cdot director)^*& \cdot name
+\end{align*}
+#+END_LaTeX
+
+
+** TODO Automata
+*** TODO Definition
+		Property Path Automata
+
+#+reveal_html:	<img class="fragment figure" src="graphics/friend-star.png"/>
+#+LaTeX: \center\includegraphics[width=0.5\textwidth]{graphics/friend-star.png}
+    #+ATTR_REVEAL: :frag (appear)
+		- It's a regular automaton over alphabet of IRIs and their inverses
+
+*** TODO Definition
+    #+ATTR_REVEAL: :frag (appear)
+		- AOEU
+
 *** TODO Heuristic
+		Distances to accepting states are lower bounds for finding answers
+
+
 ** TODO Search
 *** TODO Advantages
 **** Shortest path proves relation
 *** TODO A* speed up using query information
+		- Answers are retrieved earlier
+		- All answers still requires checking all possibilities
+			- But earlier results improve queries with limits
+
+
 ** TODO Implementation details
 *** TODO Heuristic
+		- The heuristic can be precomputed
+		- Early expansion reward shift
+			- Add an example that shows the speedup
+
 ** TODO Evaluation
 *** TODO Experiment setup
+		- Details about doge
+			- i5-4xxx @ 3GHz
+			- 8 GiB RAM
+			- Little CPU needed
+			- Memory used is linear on the dereferenced data
+			- Time dominated by dereference time
+				- It's important to do good and parallel scheduling
+		- Servers used
+
+*** TODO Experiment discussion
+		- Relative cost to CPU instruction table
+			- CPU is free
+			- Network is the active constraint
+		- Time dominated by dereference time
+			- Communication needs improvement
+				- Parallel channels
+				- Compression
+				- Simple queries
+					# - Linked Data Fragments offers this
+				- Parallel Async IO is needed on clients
 
 * Questions
 * Extra
+** TODO Informed search is superior
+** TODO Heuristic optimization demo
 ** TODO Evaluation
-*** TODO Setup
 *** TODO Experiments
-Experiments are available on the [[experiments.html][experiment slides]]
+Experiments are available on the [experiments.html][experiment slides]
 * Thanks
 * Old                                                             :noexport:
 
