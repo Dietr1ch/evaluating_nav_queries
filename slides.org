@@ -3,7 +3,7 @@
 #+Email: {jabaier,jreutter,dvrgoc}@ing.puc.cl, ddaroch@uc.cl
 #+Web: doge.ing.puc.cl/Dietrich/Slides/evaluating_nav_queries
 #+Language: en
-#+Date: 2017-07-04
+#+Date: 2017-07-06
 
 * Setup                                                            :noexport:
 #+SEQ_TODO: TODO REVIEW | DONE
@@ -142,13 +142,12 @@ review of the schemas compatibility. No conversions are needed.
 
 *** An example
 #+BEGIN_SRC txt
-prefix ht: <https://ht.acm.org/rdf/>
-prefix dc: <http://purl.org/dc/elements/1.1/>
-prefix sw: <http://www.w3.org/2001/sw/>
+prefix dblpAuthor: <http://dblp.l3s.de/d2r/resource/authors/>
+prefix dblpConf: <http://dblp.l3s.de/d2r/resource/publications/conf/>
 
-sw:RDFCore/ntriples dc:creator   "Dave Beckett"       .
-sw:RDFCore/ntriples dc:creator   "Art Barstow"        .
-sw:RDFCore/ntriples dc:publisher <http://www.w3.org/> .
+dblpConf:sigmod/Stonebraker90    dc:creator  dblpAuthor:Michael_Stonebraker  .
+dblpConf:sigmod/Stonebraker90  rdfs:label    "The Postgres DBMS."            .
+dblpAuthor:Michael_Stonebraker foaf:name     "Michael Stonebraker"           .
 #+END_SRC
 
 *** Why RDF?
@@ -324,7 +323,7 @@ If you are interested on this bad behavior, there's an example at the end
 		Distances to accepting states are lower bounds for finding answers
 
 #+reveal_html: <img class="fragment figure" src="graphics/coauth-name-h.png"/>
-#+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name-h.png}
+#+LaTeX: \pause\center\includegraphics[width=\textwidth]{graphics/coauth-name-h.png}
 
 
 *** Implementation details
@@ -336,28 +335,34 @@ If you are interested on this bad behavior, there's an example at the end
 		 - The heuristic can be precomputed
 			 - Little gain as CPU is far from being a constraint
 		 - Early goal declaration
+			 - Declare goals when before adding nodes to the queue
+			 - Avoid adding dead-end nodes
+				 - Implemented by modifying the heuristic
 
 
-*** Early goal declaration
+*** Heuristic for using Early Expansions
+		Expanding a $(node, state)$ discovers nodes paired with successor states
 
-		#+ATTR_REVEAL: :frag (appear)
-		 - When dereferencing a node many answers can become available
-			 - Search algorithms declare goals when removing a node from the queue
-			 - Removing nodes from the queue may include a dereference
-			 - But the data was available when inserting those nodes in the queue
-		 - Search can be tweaked to announce answers as soon as they can be proved
-			 - And the heuristic can be fixed to consider this reward change
+#+reveal_html: <img class="figure" src="graphics/coauth-name-h.png"/>
+#+reveal_html: <img class="fragment figure" src="graphics/coauth-name-sh.png"/>
+#+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name-h.png}
+#+LaTeX: \pause\center\includegraphics[width=\textwidth]{graphics/coauth-name-sh.png}
 
-*** TODO Early goal declaration example
-		<TODO>
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+This is similar to the path-max idea that a node can only be as promising as the
+nodes it leads to considering the cost to reach them.
+#+END_NOTES
+#+LaTeX: }
 
 
 ** Evaluation
 *** Experiment setup
 		- Search bounds
-			- Stop on $1000$ answers
-			- Stop on $100000$ triples retrieved
-			- Stop on $10$ minutes searching
+			- Stop if $1000$ answers are found
+			- Stop if $100000$ triples are retrieved
+			- Stop after $10$ minutes searching
 		- Ran on i5-4670 quad-core with 4GiB RAM
 		- Servers queried
 			- YAGO
@@ -403,11 +408,13 @@ Experiments are available on the repo
 		 #+ATTR_REVEAL: :frag (appear)
 		 - A toy database:
 			 - Alphabet and a less than relation
-		 - What matches $a \cdot lessThan^* \cdot X$?
+		 - Which patterns match $a \cdot lessThan^* \cdot X$?
 			 - a < z
 			 - a < b < c < ... < z
-			 - There's one different match per subset of $b..y$
+			 - There's one match per subset of $\{b..y\}$
 		 - Less or equal leads to infinite matches!
+		 - Is the data flawed?
+			 - On the internet you won't control it. You must avoid this
 
 * Thanks
 * Old                                                             :noexport:

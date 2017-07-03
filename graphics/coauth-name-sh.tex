@@ -1,0 +1,26 @@
+\documentclass[tikz,convert={outfile=coauth-name-sh.png}]{standalone}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{shapes.multipart}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+
+\begin{document}
+
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto, red, node distance=4.5cm, scale=1, transform shape, every text node part/.style={align=center}]
+  \tikzstyle{every state}=[align=center]
+
+	\node[initial,state]   (A)              {$A$\\ $h=2$};
+	\node[state]           (P) [right of=A] {$P$\\ $h=1$};
+  \node[state]           (C) [right of=P] {$C$\\ $h=0$};
+  \node[state,accepting] (N) [right of=C] {$N$\\ $h=\infty$};
+
+	\path (A) edge  [bend left]   node {$dc:creator$}   (P)
+        (P) edge  [bend left]  node {$dc:creator^{-}$} (C)
+        (C) edge  [bend left]  node {$dc:creator$} (P)
+        (C) edge  [bend left]  node {$dc:title$}      (N);
+\end{tikzpicture}
+
+\end{document}
