@@ -66,6 +66,7 @@
 
 ** Motivation
 *** Sharing across databases
+
 		#+ATTR_REVEAL: :frag (appear)
 		- Information on relational databases is hard to share
 			- Different format, schema and access policies
@@ -151,6 +152,7 @@ sw:RDFCore/ntriples dc:publisher <http://www.w3.org/> .
 #+END_SRC
 
 *** Why RDF?
+
 		#+ATTR_REVEAL: :frag (appear)
 		- Different databases can be trivially joined
 			- No schema compatibility problems or conversions.
@@ -192,7 +194,7 @@ SPARQL servers provide endpoints (services) to interact
 #+LaTeX: }
 
 
-*** REVIEW Problems with SPARQL
+*** Problems with SPARQL
 
 		#+ATTR_REVEAL: :frag (appear)
 		- Querying multiple servers is hard
@@ -217,6 +219,7 @@ to send the query and receive the final answer.
 * Navigational Queries
 ** Navigation
 *** Searching data the way you browse for it
+
 		#+ATTR_REVEAL: :frag (appear)
 		- You don't know which server has the answer
 			- From a starting point you follow links onto your answers
@@ -284,6 +287,7 @@ If you are interested on this bad behavior, there's an example at the end
 		- Can be enhanced with filtering on States and Transitions
 
 *** Example
+
 #+reveal_html: <img class="figure" src="graphics/coauth-name.png"/>
 #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name.png}
 
@@ -325,6 +329,7 @@ If you are interested on this bad behavior, there's an example at the end
 
 *** Implementation details
 
+		#+ATTR_REVEAL: :frag (appear)
 		 - Parallel expansions
 			 - Instead of expand the top f-value, try to expand all of them
 			 - A Message-passing implementation would do even better
@@ -332,10 +337,22 @@ If you are interested on this bad behavior, there's an example at the end
 			 - Little gain as CPU is far from being a constraint
 		 - Early goal declaration
 
+
+*** Early goal declaration
+
+		#+ATTR_REVEAL: :frag (appear)
+		 - When dereferencing a node many answers can become available
+			 - Search algorithms declare goals when removing a node from the queue
+			 - Removing nodes from the queue may include a dereference
+			 - But the data was available when inserting those nodes in the queue
+		 - Search can be tweaked to announce answers as soon as they can be proved
+			 - And the heuristic can be fixed to consider this reward change
+
 *** TODO Early goal declaration example
 		<TODO>
 
-** TODO Evaluation
+
+** Evaluation
 *** Experiment setup
 		- Search bounds
 			- Stop on $1000$ answers
@@ -351,12 +368,17 @@ If you are interested on this bad behavior, there's an example at the end
 *** Sample query - CoAuthor
 #+reveal_html: <img class="figure" src="graphics/q1.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q1.pdf}
+
 *** Sample query - Bacon Number
 #+reveal_html: <img class="figure" src="graphics/q2.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q2.pdf}
-*** TODO Sample query - NATO
+
+*** Sample query - NATO
 #+reveal_html: <img class="figure" src="graphics/q3.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.pdf}
+
+*** TODO Results summary
+		<TODO>
 
 *** Experiment discussion
 		- Little CPU needed
