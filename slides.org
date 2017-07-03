@@ -350,13 +350,13 @@ If you are interested on this bad behavior, there's an example at the end
 
 *** Sample query - CoAuthor
 #+reveal_html: <img class="figure" src="graphics/q1.png"/>
-#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q1.png}
+#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q1.pdf}
 *** Sample query - Bacon Number
 #+reveal_html: <img class="figure" src="graphics/q2.png"/>
-#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q2.png}
+#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q2.pdf}
 *** TODO Sample query - NATO
 #+reveal_html: <img class="figure" src="graphics/q3.png"/>
-#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.png}
+#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.pdf}
 
 *** Experiment discussion
 		- Little CPU needed
