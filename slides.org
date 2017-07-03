@@ -285,7 +285,7 @@ If you are interested on this bad behavior, there's an example at the end
 
 *** Example
 #+reveal_html: <img class="figure" src="graphics/coauth-name.png"/>
-#+LaTeX: \center\includegraphics[width=0.5\textwidth]{graphics/coauth-name.png}
+#+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name.png}
 
 ** Search
 *** Matching as a Search Problem
@@ -320,7 +320,7 @@ If you are interested on this bad behavior, there's an example at the end
 		Distances to accepting states are lower bounds for finding answers
 
 #+reveal_html: <img class="fragment figure" src="graphics/coauth-name-h.png"/>
-#+LaTeX: \center\includegraphics[width=0.5\textwidth]{graphics/coauth-name-h.png}
+#+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name-h.png}
 
 
 *** Implementation details
