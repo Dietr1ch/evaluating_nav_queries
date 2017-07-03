@@ -48,7 +48,7 @@
  #+OPTIONS: reveal_control:t
  #+OPTIONS: reveal_rolling_links:t
  #+OPTIONS: reveal_keyboard:t
- #+OPTIONS: reveal_overview:nil
+ #+OPTIONS: reveal_overview:t
 
 ** Beamer
 #+BEAMER_THEME: Rochester [height=20pt]
@@ -382,8 +382,16 @@ nodes it leads to considering the cost to reach them.
 #+reveal_html: <img class="figure" src="graphics/q3.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.pdf}
 
-*** TODO Results summary
-		<TODO>
+*** Results summary
+		We measured 11 queries, the table counts on how many queries the algorithms
+		had better performance.
+
+|--------------------+----+-----+-----|
+| Measure            | A* | BFS | DFS |
+|--------------------+----+-----+-----|
+| Requests / Answers | 11 |   3 |   4 |
+| Time / Answers     | 11 |   3 |   4 |
+|--------------------+----+-----+-----|
 
 *** Experiment discussion
 		- Little CPU needed
