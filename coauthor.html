@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
+	svg {
+		display: flex;
+		margin: auto;
+	}
 	.link line {
 		stroke: #696969;
 	}
@@ -12,7 +16,7 @@
 
 	.node circle {
 		stroke: #000;
-		fill: #444;
+		fill: #666;
 		stroke-width: 1.5px;
 	}
 
@@ -76,10 +80,6 @@
 			    .append("line")
 			    .style("stroke-width", function(d) {return 2+"px"});
 
-			link
-			    .filter(function(d) { return d.bond > 1; }).append("line")
-			    .attr("class", "separator");
-
 			var node = svg
 			              .selectAll(".node")
 			              .data(graph.nodes)
@@ -107,7 +107,7 @@
 			function handleMouseOver(d, i) {
 				if (d.expanded) return;
 				d3.select(this)
-				  .attr("r", radius(getRadius(d)+2))
+				  .attr("r", radius(getRadius(d)+4))
 				;
 			}
 			function handleMouseOut(d, i) {
