@@ -14,9 +14,15 @@
 		stroke-width: 2px;
 	}
 
-	.node circle {
+	.node circle.IRI {
 		stroke: #000;
-		fill: #666;
+		fill: #fff;
+		stroke-width: 1.5px;
+		transition: fill 2s ease-in;
+	}
+	.node circle.Data {
+		stroke: #000;
+		fill: #fff;
 		stroke-width: 1.5px;
 	}
 
@@ -30,10 +36,11 @@
 	<script src="js/d3.v3.min.js"></script>
 	<script>
 		var width = 960;
-		var height = 500;
+		var height = 600;
 
 		var authRadius = 12
 		var publRadius = 10;
+		var nodeRadius = 5;
 		var linkRadius = 60;
 
 		var color = d3.scale.category20();
@@ -96,12 +103,22 @@
 			function getRadiusObj(d) {
 				return radius(getRadius(d));
 			}
+			function getColor(d) {
+				if (!d.expanded) return "#666";
+				var c = color(d.type);
+				if (d.type == "authName") {
+					c = "red";
+				}
+				else if (d.type == "publName") {
+					c = "green";
+				}
+					return c;
+			}
 			function handleMouseClick(d, i) {
 				if (d.expanded) return;
 				d.expanded = true;
-
 				d3.select(this)
-				  .style("fill", color(d.type) )
+				  .style("fill", getColor(d) )
 				;
 			}
 			function handleMouseOver(d, i) {
@@ -120,17 +137,42 @@
 			node
 			    .filter(function(d) { return d.type == "auth"; })
 			    .append("circle")
-			    .attr("r", getRadiusObj)
-			    .on("click", handleMouseClick)
-			    .on("mouseover", handleMouseOver)
-			    .on("mouseout",  handleMouseOut)
+			    .attr("class", "IRI")
+			    .attr("r",     getRadiusObj)
+			    .style("fill", getColor)
+			    .on("click",        handleMouseClick)
+			    .on("mouseover",    handleMouseOver)
+			    .on("mouseout",     handleMouseOut)
 			;
 
 			node
 			    .filter(function(d) { return d.type == "publ"; })
 			    .append("circle")
-			    .attr("r", getRadiusObj)
-			    .on("click", handleMouseClick)
+			    .attr("class", "IRI")
+			    .attr("r",     getRadiusObj)
+			    .style("fill", getColor)
+			    .on("click",         handleMouseClick)
+			    .on("mouseover",     handleMouseOver)
+			    .on("mouseout",      handleMouseOut)
+			;
+
+			node
+			    .filter(function(d) { return d.type == "authName"; })
+			    .append("circle")
+			    .attr("class", "data")
+			    .attr("r",     getRadiusObj)
+			    .style("fill", getColor)
+			    .on("click",     handleMouseClick)
+			    .on("mouseover", handleMouseOver)
+			    .on("mouseout",  handleMouseOut)
+			;
+			node
+			    .filter(function(d) { return d.type == "publName"; })
+			    .append("circle")
+			    .attr("class", "data")
+			    .attr("r",     getRadiusObj)
+			    .style("fill", getColor)
+			    .on("click",     handleMouseClick)
 			    .on("mouseover", handleMouseOver)
 			    .on("mouseout",  handleMouseOut)
 			;
