@@ -14,15 +14,15 @@
 		stroke-width: 2px;
 	}
 
-	.node circle.IRI {
-		stroke: #000;
+	.node circle {
+		stroke: #fff;
 		fill: #fff;
-		stroke-width: 1.5px;
-		transition: fill 2s ease-in;
+	}
+	.node circle.IRI {
+		stroke-width: 2px;
+		transition: fill 3s ease-in;
 	}
 	.node circle.Data {
-		stroke: #000;
-		fill: #fff;
 		stroke-width: 1.5px;
 	}
 
@@ -111,6 +111,11 @@
 				  .attr("r", radius(getRadius(d)))
 				;
 			}
+			function handleTransitionEnd(d, i) {
+				d3.select(this)
+				  .style("stroke", "#000")
+				;
+			}
 
 
 			force
@@ -143,9 +148,13 @@
 			    .attr("class", "IRI")
 			    .attr("r",     getRadiusObj)
 			    .style("fill", getColor)
-			    .on("click",        handleMouseClick)
-			    .on("mouseover",    handleMouseOver)
-			    .on("mouseout",     handleMouseOut)
+			    .on("click",         handleMouseClick)
+			    .on("mouseover",     handleMouseOver)
+			    .on("mouseout",      handleMouseOut)
+			    .on("transitionend", handleTransitionEnd)
+			    // Mark expanded nodes
+			    .filter(function(d) { return d.expanded; })
+			    .style("stroke", "#000")
 			;
 
 			node
@@ -154,9 +163,10 @@
 			    .attr("class", "IRI")
 			    .attr("r",     getRadiusObj)
 			    .style("fill", getColor)
-			    .on("click",         handleMouseClick)
-			    .on("mouseover",     handleMouseOver)
-			    .on("mouseout",      handleMouseOut)
+			    .on("click",          handleMouseClick)
+			    .on("mouseover",      handleMouseOver)
+			    .on("mouseout",       handleMouseOut)
+			    .on("transitionend",  handleTransitionEnd)
 			;
 
 			node
