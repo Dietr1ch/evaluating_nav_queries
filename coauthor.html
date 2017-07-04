@@ -6,17 +6,13 @@
 		margin: auto;
 	}
 	.link line {
-		stroke: #696969;
-	}
-
-	.link line.separator {
-		stroke: #fff;
+		stroke: #777;
 		stroke-width: 2px;
 	}
 
 	.node circle {
 		stroke: #fff;
-		fill: #fff;
+		fill: #f0f;
 	}
 	.node circle.IRI {
 		stroke-width: 2px;
@@ -27,24 +23,30 @@
 	}
 
 	.node text {
+		stroke: none;
+		fill: none;
 		font: 10px sans-serif;
 		pointer-events: none;
+		user-select: none;
+	}
+	.node text.Local {
+		fill: #fff;
 	}
 
 </style>
 <body>
 	<script src="js/d3.v3.min.js"></script>
 	<script>
-		var width = 960;
-		var height = 600;
+		var width = window.innerWidth;
+		var height = window.innerHeight;
 
 		var authRadius = 12
 		var publRadius = 10;
 		var nodeRadius = 5;
-		var linkRadius = 60;
+		var linkRadius = 50;
 
+		// Color and radius scales
 		var color = d3.scale.category20();
-
 		var radius = d3.scale.sqrt().range([0, 6]);
 
 		var svg = d3.select("body").append("svg")
@@ -67,14 +69,21 @@
 				    .attr("x1", function(d) { return d.source.x; })
 				    .attr("y1", function(d) { return d.source.y; })
 				    .attr("x2", function(d) { return d.target.x; })
-				    .attr("y2", function(d) { return d.target.y; });
+				    .attr("y2", function(d) { return d.target.y; })
+				;
 				node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 			}
 
+			function isIri(d) {
+				if (d.type == "auth") return true;
+				if (d.type == "publ") return true;
+				return false;
+			}
+
 			function getRadius(d) {
-				if (d.type == "auth") return authRadius
-				if (d.type == "publ") return publRadius
-				return nodeRadius
+				if (d.type == "auth") return authRadius;
+				if (d.type == "publ") return publRadius;
+				return nodeRadius;
 			}
 			function getRadiusObj(d) {
 				return radius(getRadius(d));
@@ -82,6 +91,7 @@
 
 			function getColor(d) {
 				if (!d.expanded) return "#666";
+
 				var c = color(d.type);
 				if (d.type == "authName") {
 					c = "red";
@@ -89,10 +99,23 @@
 				else if (d.type == "publName") {
 					c = "green";
 				}
-					return c;
+				return c;
 			}
 
+			function discover(n) {
+				if (n.expanded) return;
+				n.discovered = true;
+				d3.selectAll("circle")
+				  .filter(function(d){return d.id==n.id;})
+				  .attr("stroke", "#fff")
+				;
+				d3.selectAll("text")
+				  .filter(function(d){return d.id==n.id;})
+				  .attr("class", "Local")
+				;
+			}
 			function handleMouseClick(d, i) {
+				if (!d.discovered) return;
 				if (d.expanded) return;
 				d.expanded = true;
 				d3.select(this)
@@ -115,6 +138,8 @@
 				d3.select(this)
 				  .style("stroke", "#000")
 				;
+				d.neighF.forEach(discover);
+				d.neighB.forEach(discover);
 			}
 
 
@@ -122,17 +147,19 @@
 			     .nodes(graph.nodes)
 			     .links(graph.links)
 			     .on("tick", tick)
-			     .start();
+			     .start()
+			;
 
 			var link = svg
 			               .selectAll(".link")
 			               .data(graph.links)
 			               .enter().append("g")
-			               .attr("class", "link");
+			               .attr("class", "link")
+			;
 
 			link
 			    .append("line")
-			    .style("stroke-width", function(d) {return 2+"px"});
+			;
 
 			var node = svg
 			              .selectAll(".node")
@@ -142,7 +169,7 @@
 			              .call(force.drag)
 			;
 
-			node
+			var s0 = node
 			    .filter(function(d) { return d.type == "auth"; })
 			    .append("circle")
 			    .attr("class", "IRI")
@@ -153,8 +180,7 @@
 			    .on("mouseout",      handleMouseOut)
 			    .on("transitionend", handleTransitionEnd)
 			    // Mark expanded nodes
-			    .filter(function(d) { return d.expanded; })
-			    .style("stroke", "#000")
+			    .filter(function(d) { return d.discovered; })
 			;
 
 			node
@@ -196,7 +222,24 @@
 			    .attr("dy", ".35em")
 			    .attr("text-anchor", "middle")
 			    .text(function(d) { return d.name; })
-			;
+			    // Mark expanded nodes
+			    .filter(function(d) { return d.expanded; })
+			    .style("stroke", "#fff")
+				;
+
+			// Link nodes
+			node.each(function(n) {
+				if (isIri(n)) {
+					link.each(function(l) {
+						if (l.source == n) {
+								n.neighF.push(l.target);
+								l.target.neighB.push(n);
+						}
+					});
+				}
+			});
+
+			s0.each(function(d) {discover(d);})
 		});
 	</script>
 </body>
