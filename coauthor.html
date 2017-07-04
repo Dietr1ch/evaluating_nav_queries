@@ -2,8 +2,8 @@
 <meta charset="utf-8">
 <style>
 	.link line {
-	stroke: #696969;
-		}
+		stroke: #696969;
+	}
 
 	.link line.separator {
 		stroke: #fff;
@@ -12,6 +12,7 @@
 
 	.node circle {
 		stroke: #000;
+		fill: #444;
 		stroke-width: 1.5px;
 	}
 
@@ -19,6 +20,7 @@
 		font: 10px sans-serif;
 		pointer-events: none;
 	}
+
 </style>
 <body>
 	<script src="js/d3.v3.min.js"></script>
@@ -83,26 +85,63 @@
 			              .data(graph.nodes)
 			              .enter().append("g")
 			              .attr("class", "node")
-			              .call(force.drag);
+			              .call(force.drag)
+			;
+
+			function getRadius(d) {
+				if (d.type == "auth") return authRadius
+				if (d.type == "publ") return publRadius
+				return nodeRadius
+			}
+			function getRadiusObj(d) {
+				return radius(getRadius(d));
+			}
+			function handleMouseClick(d, i) {
+				if (d.expanded) return;
+				d.expanded = true;
+
+				d3.select(this)
+				  .style("fill", color(d.type) )
+				;
+			}
+			function handleMouseOver(d, i) {
+				if (d.expanded) return;
+				d3.select(this)
+				  .attr("r", radius(getRadius(d)+2))
+				;
+			}
+			function handleMouseOut(d, i) {
+				if (d.expanded) return;
+				d3.select(this)
+				  .attr("r", radius(getRadius(d)))
+				;
+			}
 
 			node
 			    .filter(function(d) { return d.type == "auth"; })
 			    .append("circle")
-			    .attr("r", function(d) { return radius(authRadius); })
-			    .style("fill", function(d) { return color(d.type); });
+			    .attr("r", getRadiusObj)
+			    .on("click", handleMouseClick)
+			    .on("mouseover", handleMouseOver)
+			    .on("mouseout",  handleMouseOut)
+			;
 
 			node
 			    .filter(function(d) { return d.type == "publ"; })
 			    .append("circle")
-			    .attr("r", function(d) { return radius(publRadius); })
-			    .style("fill", function(d) { return color(d.type); });
+			    .attr("r", getRadiusObj)
+			    .on("click", handleMouseClick)
+			    .on("mouseover", handleMouseOver)
+			    .on("mouseout",  handleMouseOut)
+			;
 
 
 			node
 			    .append("text")
 			    .attr("dy", ".35em")
 			    .attr("text-anchor", "middle")
-			    .text(function(d) { return d.name; });
+			    .text(function(d) { return d.name; })
+			;
 		});
 	</script>
 </body>
