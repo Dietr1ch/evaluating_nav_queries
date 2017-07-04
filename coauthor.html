@@ -71,6 +71,48 @@
 				node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 			}
 
+			function getRadius(d) {
+				if (d.type == "auth") return authRadius
+				if (d.type == "publ") return publRadius
+				return nodeRadius
+			}
+			function getRadiusObj(d) {
+				return radius(getRadius(d));
+			}
+
+			function getColor(d) {
+				if (!d.expanded) return "#666";
+				var c = color(d.type);
+				if (d.type == "authName") {
+					c = "red";
+				}
+				else if (d.type == "publName") {
+					c = "green";
+				}
+					return c;
+			}
+
+			function handleMouseClick(d, i) {
+				if (d.expanded) return;
+				d.expanded = true;
+				d3.select(this)
+				  .style("fill", getColor(d) )
+				;
+			}
+			function handleMouseOver(d, i) {
+				if (d.expanded) return;
+				d3.select(this)
+				  .attr("r", radius(getRadius(d)+4))
+				;
+			}
+			function handleMouseOut(d, i) {
+				if (d.expanded) return;
+				d3.select(this)
+				  .attr("r", radius(getRadius(d)))
+				;
+			}
+
+
 			force
 			     .nodes(graph.nodes)
 			     .links(graph.links)
@@ -94,45 +136,6 @@
 			              .attr("class", "node")
 			              .call(force.drag)
 			;
-
-			function getRadius(d) {
-				if (d.type == "auth") return authRadius
-				if (d.type == "publ") return publRadius
-				return nodeRadius
-			}
-			function getRadiusObj(d) {
-				return radius(getRadius(d));
-			}
-			function getColor(d) {
-				if (!d.expanded) return "#666";
-				var c = color(d.type);
-				if (d.type == "authName") {
-					c = "red";
-				}
-				else if (d.type == "publName") {
-					c = "green";
-				}
-					return c;
-			}
-			function handleMouseClick(d, i) {
-				if (d.expanded) return;
-				d.expanded = true;
-				d3.select(this)
-				  .style("fill", getColor(d) )
-				;
-			}
-			function handleMouseOver(d, i) {
-				if (d.expanded) return;
-				d3.select(this)
-				  .attr("r", radius(getRadius(d)+4))
-				;
-			}
-			function handleMouseOut(d, i) {
-				if (d.expanded) return;
-				d3.select(this)
-				  .attr("r", radius(getRadius(d)))
-				;
-			}
 
 			node
 			    .filter(function(d) { return d.type == "auth"; })
