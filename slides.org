@@ -52,7 +52,6 @@
 
 ** Beamer
 #+BEAMER_THEME: Rochester [height=20pt]
-# #+LATEX_HEADER: \usepackage{verbatim}
 
 # #+OPTIONS: H:2
 # #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
@@ -143,11 +142,11 @@ review of the schemas compatibility. No conversions are needed.
 *** An example
 #+BEGIN_SRC txt
 prefix dblpAuthor: <http://dblp.l3s.de/d2r/resource/authors/>
-prefix dblpConf: <http://dblp.l3s.de/d2r/resource/publications/conf/>
+prefix dblpConf:   <http://dblp.l3s.de/d2r/resource/publications/conf/>
 
-dblpConf:sigmod/Stonebraker90    dc:creator  dblpAuthor:Michael_Stonebraker  .
-dblpConf:sigmod/Stonebraker90  rdfs:label    "The Postgres DBMS."            .
-dblpAuthor:Michael_Stonebraker foaf:name     "Michael Stonebraker"           .
+dblpConf:sigmod/Stonebraker90    dc:creator  dblpAuthor:Michael_Stonebraker
+dblpConf:sigmod/Stonebraker90  rdfs:label    "The Postgres DBMS."
+dblpAuthor:Michael_Stonebraker foaf:name     "Michael Stonebraker"
 #+END_SRC
 
 *** Why RDF?

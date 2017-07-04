@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {"name": "A0", "type": "auth"},
+    {"name": "A1", "type": "auth"},
+    {"name": "A2", "type": "auth"},
+    {"name": "A3", "type": "auth"},
+    {"name": "A4", "type": "auth"},
+    {"name": "A5", "type": "auth"},
+    {"name": "A6", "type": "auth"},
+    {"name": "A7", "type": "auth"},
+    {"name": "A8", "type": "auth"},
+    {"name": "A9", "type": "auth"},
+
+    {"name": "P0", "type": "publ"},
+    {"name": "P1", "type": "publ"},
+    {"name": "P2", "type": "publ"},
+    {"name": "P3", "type": "publ"},
+    {"name": "P4", "type": "publ"},
+    {"name": "P5", "type": "publ"},
+    {"name": "P6", "type": "publ"},
+    {"name": "P7", "type": "publ"},
+    {"name": "P8", "type": "publ"},
+    {"name": "P9", "type": "publ"}
+  ],
+  "links": [
+    {"source": 0, "target": 11},
+    {"source": 0, "target": 17},
+    {"source": 0, "target": 18},
+    {"source": 0, "target": 19},
+    {"source": 1, "target": 12},
+    {"source": 1, "target": 13},
+    {"source": 1, "target": 14},
+    {"source": 2, "target": 15},
+    {"source": 2, "target": 16},
+    {"source": 3, "target": 10},
+    {"source": 3, "target": 11},
+    {"source": 4, "target": 16},
+    {"source": 4, "target": 16},
+    {"source": 5, "target": 16},
+    {"source": 5, "target": 16},
+    {"source": 5, "target": 12},
+    {"source": 6, "target": 14},
+    {"source": 7, "target": 12},
+    {"source": 8, "target": 17},
+    {"source": 9, "target": 17}
+  ]
+}
+
+
