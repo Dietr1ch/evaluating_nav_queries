@@ -440,6 +440,7 @@ bound for the Bacon number of the actors found.
 #+END_NOTES
 #+LaTeX: }
 
+
 *** Results summary
 		Over the 11 queries we counted on how many queries the algorithms performed
 		the best
@@ -450,6 +451,13 @@ bound for the Bacon number of the actors found.
 | Requests / Answers | 11 |   3 |   4 |
 | Time / Answers     | 11 |   3 |   4 |
 |--------------------+----+-----+-----|
+
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+A* seems to be the right mix between BFS and DFS
+#+END_NOTES
+#+LaTeX: }
 
 *** Results summary
 		Requests vs answers is the most fair measure as dereference times vary.
