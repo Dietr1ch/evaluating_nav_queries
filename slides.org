@@ -3,11 +3,10 @@
 #+Email: {jabaier,jreutter,dvrgoc}@ing.puc.cl, ddaroch@uc.cl
 #+Web: doge.ing.puc.cl/Dietrich/Slides/evaluating_nav_queries
 #+Language: en
-#+Date: 2017-07-06
+#+Date: CIWS & PUC Chile
 
 * Tasks                                                           :noexport:
 ** TODO Practice
-** TODO Add affiliation
 * Setup                                                            :noexport:
 #+SEQ_TODO: TODO REVIEW | DONE
 #+REVEAL_ROOT: http://localhost:8000
@@ -271,7 +270,7 @@ If you are interested on this bad behaviour, there's an example at the end
 #+BEGIN_LaTeX
 \begin{align*}
 (successor)^*&  \\
-(children^{-} + children)& \cdot name  \\
+(children + parent^{-})& \cdot name  \\
 (creator^{-} \cdot creator)^+& \cdot name  \\
 (acted\_in \cdot acted\_in^{-})^+& \cdot directed \cdot name
 \end{align*}
@@ -294,42 +293,36 @@ If you are interested on this bad behaviour, there's an example at the end
 #+reveal_html: <img class="figure" src="graphics/coauth-name.png"/>
 #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name.png}
 
-** Search
-*** Matching as a Search Problem
-		Matching resembles a search problem
+** Query evaluation
+*** Automaton evaluation problem
 
 		#+ATTR_REVEAL: :frag (appear)
-		- The problem is a Search Problem over $RDFGraph \times States$
-		- But not only one shortest-path is needed
-			- It's easy to tweak the search to get all shortest paths
+		- Given an RDF graph, an Automaton for it, and a starting RDF node,
+		- Find 'all' the matching paths
 
-*** Searching with an Automaton
+*** Evaluating an Automaton query
 
 #+reveal_html: <div class="stretch">
 #+reveal_html:   <iframe data-src="coauthor.html" width="100%" height="100%"></iframe>
 #+reveal_html: </div>
 #+LaTeX: \href{http://localhost:8000/coauthor.html}{link}
 
-
-*** Advantages of using a Search Problem
-
-		#+ATTR_REVEAL: :frag (appear)
-		- Relations are only proved once
-			- Answers are brief
-			- Requires remembering visited $(node, state)$ pairs
-		- Search is agnostic from the source of the data
-			- You just need a way to dereference
-			- Contacting new servers on-the-fly is free
-
-*** Using query information to speed up search
+*** Matching as a Search Problem
+		Matching resembles a search problem
 
 		#+ATTR_REVEAL: :frag (appear)
-		- Property Path matching is was seen as a recursive algorithm
-			- That leads a DFS implementation
-			- No guarantees on solution size or their order
-		- Search for shortest paths needed BFS, but it's too slow
-		- Using query information allows to use $A^*$
-			- 'Right' mix between both approaches
+		- The problem is a Search Problem over $RDFGraph \times States$
+		- But not only a shortest-path is needed
+			- It's easy to tweak the search to get all shortest paths
+
+*** Evaluating using search
+		#+ATTR_REVEAL: :frag (appear)
+		- From the search community 3 pathfinding algorithms are well known
+			- $A^*$, BFS (Dijkstra) and DFS
+			- The recursive approach that was previously used resembles DFS
+		- BFS and DFS were already tried
+		- Using $A^*$ requires additional information about the search space
+			- We found an easy way to get it
 
 *** Heuristic
 		Distances to accepting states are lower bounds for finding answers
@@ -338,7 +331,25 @@ If you are interested on this bad behaviour, there's an example at the end
 #+LaTeX: \pause\center\includegraphics[width=\textwidth]{graphics/coauth-name-h.png}
 
 
-*** Implementation details
+*** Implementation
+
+		#+ATTR_REVEAL: :frag (appear)
+		 - Search nodes are $(RDFNode, State)$ pairs
+		 - We used a priority queue and an index for the existing search nodes
+			 - Typical $A^*$ and BFS structures
+			 - Needed for deduplication on DFS
+		 - We altered the expected cost (priority) to get different behaviours
+			 - $A^*$ uses $f=g+h$, node cost + estimated cost left
+			 - BFS uses $f=g$
+			 - DFS uses $f=h$
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+Our implementation is publicly available
+#+END_NOTES
+#+LaTeX: }
+
+*** Optimizations used
 
 		#+ATTR_REVEAL: :frag (appear)
 		 - Parallel expansions
@@ -350,6 +361,8 @@ If you are interested on this bad behaviour, there's an example at the end
 		 - Precomputed heuristic
 
 
+# REVIEW add slide on Parallel expansion?
+# not enough time :/
 
 *** Heuristic for using Early Expansions
 		Expanding a $(node, state)$ discovers nodes paired with successor states
@@ -368,7 +381,7 @@ nodes it leads to considering the cost to reach them.
 #+LaTeX: }
 
 
-** Evaluation
+** Experimental evaluation
 *** Experiment setup
 		- 11 queries using
 			- DBLP
@@ -418,21 +431,9 @@ Here BFS retrieves all papers before retrieving information about the authors
 
 #+LaTeX: \note{
 #+BEGIN_NOTES
-This query has for arbitrary deep solutions, solutions found by DFS are
-increasingly long, and they don't really provide a good bound for the Bacon
-number of the actors found
-#+END_NOTES
-#+LaTeX: }
-
-*** Sample query - NATO
-#+reveal_html: <img class="figure" src="graphics/q3.png"/>
-#+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.pdf}
-
-#+LaTeX: \note{
-#+BEGIN_NOTES
-This query is interesting because it can be solved without much trouble, yet it
-causes some SPARQL engines that already have all the data to get out of memory
-without outputting any results
+This query has very deep solutions, and as DFS does not minimize length, it
+gathers increasingly longer solutions, so they don't really provide a good
+bound for the Bacon number of the actors found.
 #+END_NOTES
 #+LaTeX: }
 
@@ -446,6 +447,19 @@ without outputting any results
 | Requests / Answers | 11 |   3 |   4 |
 | Time / Answers     | 11 |   3 |   4 |
 |--------------------+----+-----+-----|
+
+*** Results summary
+		Requests vs answers is the most fair measure as dereference times vary.
+		We noted that parallelism helps all algorithm
+
+|---------------------------+----+-----+-----|
+| Parallel requests allowed | A* | BFS | DFS |
+|---------------------------+----+-----+-----|
+|                         1 | 11 |   3 |   4 |
+|                        10 |  7 |   3 |   3 |
+|                        20 |  6 |   3 |   3 |
+|                        40 |  6 |   4 |   5 |
+|---------------------------+----+-----+-----|
 
 #+LaTeX: \note{
 #+BEGIN_NOTES
