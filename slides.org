@@ -5,6 +5,9 @@
 #+Language: en
 #+Date: 2017-07-06
 
+* Tasks                                                           :noexport:
+** TODO Practice
+** TODO Add affiliation
 * Setup                                                            :noexport:
 #+SEQ_TODO: TODO REVIEW | DONE
 #+REVEAL_ROOT: http://localhost:8000
@@ -95,13 +98,15 @@ Duplicating the shared data on all databases does not makes much sense
 
 ** Linked Data
 *** One Database to rule them all
-		LD movement proposes using a graph made of IRIs and strings
+		LD movement proposes a framework for modeling data that can be linked and
+		distributed
 
 		#+ATTR_REVEAL: :frag (appear)
-		- Uses links to data instead of copies
-		- Uses IRIs as data identifiers
-		- Uses IRIs as relation identifiers
-			- And suggests collection of relations to use
+		- A Graph made of IRIs and strings
+			- IRIs link data instead of copying it
+			- Uses IRIs as data identifiers
+			- Uses IRIs as relation identifiers
+				- And suggests collection of relations to use
 
 
 #+LaTeX: \note{
@@ -256,7 +261,7 @@ to compute.
 Property Paths were included on SPARQL 1.1, but they don't help with SPARQL's
 discoverability problems and as they are used as patterns rather than relations
 they lead to too many answers.
-If you are interested on this bad behavior, there's an example at the end
+If you are interested on this bad behaviour, there's an example at the end
 #+END_NOTES
 #+LaTeX: }
 
@@ -266,7 +271,7 @@ If you are interested on this bad behavior, there's an example at the end
 #+BEGIN_LaTeX
 \begin{align*}
 (successor)^*&  \\
-(children + parent^{-})& \cdot name  \\
+(children^{-} + children)& \cdot name  \\
 (creator^{-} \cdot creator)^+& \cdot name  \\
 (acted\_in \cdot acted\_in^{-})^+& \cdot directed \cdot name
 \end{align*}
@@ -337,14 +342,13 @@ If you are interested on this bad behavior, there's an example at the end
 
 		#+ATTR_REVEAL: :frag (appear)
 		 - Parallel expansions
-			 - Instead of expand the top f-value, try to expand all of them
-			 - A Message-passing implementation would do even better
-		 - The heuristic can be precomputed
-			 - Little gain as CPU is far from being a constraint
+			 - Instead of expand any top f-value node, try to expand all of them
 		 - Early goal declaration
 			 - Declare goals when before adding nodes to the queue
 			 - Avoid adding dead-end nodes
 				 - Implemented by modifying the heuristic
+		 - Precomputed heuristic
+
 
 
 *** Heuristic for using Early Expansions
@@ -366,32 +370,75 @@ nodes it leads to considering the cost to reach them.
 
 ** Evaluation
 *** Experiment setup
+		- 11 queries using
+			- DBLP
+			- DBpedia
+			- Linked Movie Database
+			- YAGO
+		- Ran on i5-4670 quad-core with 4 GiB RAM
+		- Python multi-process implementation
 		- Search bounds
 			- Stop if $1000$ answers are found
 			- Stop if $100000$ triples are retrieved
 			- Stop after $10$ minutes searching
-		- Ran on i5-4670 quad-core with 4 GiB RAM
-		- Servers queried
-			- YAGO
-			- DBLP
-			- DBpedia
-			- Linked Movie Database
 
-*** Sample query - Coauthor
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+We experimented with 11 queries over DBLP, DBpedia, LMDB and YAGO.
+Some of the queries required using multiple servers without knowing about them
+at query time
+
+The experiments were done on a server running a 4th gen Intel CPU and 4GiB of
+RAM
+
+The implementation was done on Python, which offered good libraries and good
+enough performance as we already knew that dereference would dominate the time
+
+We used bounds on answers retrieved, data downloaded and time in order to avoid
+having bad behaved runs
+#+END_NOTES
+#+LaTeX: }
+
+
+*** Sample query - Coauthor names
 #+reveal_html: <img class="figure" src="graphics/q1.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q1.pdf}
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+Here BFS retrieves all papers before retrieving information about the authors
+#+END_NOTES
+#+LaTeX: }
+
 
 *** Sample query - Bacon Number
 #+reveal_html: <img class="figure" src="graphics/q2.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q2.pdf}
 
+#+LaTeX: \note{
+#+BEGIN_NOTES
+This query has for arbitrary deep solutions, solutions found by DFS are
+increasingly long, and they don't really provide a good bound for the Bacon
+number of the actors found
+#+END_NOTES
+#+LaTeX: }
+
 *** Sample query - NATO
 #+reveal_html: <img class="figure" src="graphics/q3.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q3.pdf}
 
+#+LaTeX: \note{
+#+BEGIN_NOTES
+This query is interesting because it can be solved without much trouble, yet it
+causes some SPARQL engines that already have all the data to get out of memory
+without outputting any results
+#+END_NOTES
+#+LaTeX: }
+
 *** Results summary
-		We measured 11 queries, the table counts on how many queries the algorithms
-		had better performance.
+		Over the 11 queries we counted on how many queries the algorithms performed
+		the best
 
 |--------------------+----+-----+-----|
 | Measure            | A* | BFS | DFS |
@@ -400,15 +447,38 @@ nodes it leads to considering the cost to reach them.
 | Time / Answers     | 11 |   3 |   4 |
 |--------------------+----+-----+-----|
 
+#+LaTeX: \note{
+#+BEGIN_NOTES
+Go back and show which algorithm dominated
+#+END_NOTES
+#+LaTeX: }
+
 *** Experiment discussion
-		- Little CPU needed
+		- Little CPU usage, under 5%
 		- Memory used is linear on the dereferenced data
 		- Time dominated by dereference time
-			- It's important to do good and parallel scheduling
+			- Parallel dereference gives free speedup
+				- Gains bounded by data and throughput
 		- Optimizing dereference should yield to vast improvements
 			- Parallel and reusable connections
 			- Compression
-			- Simple queries (Subset of Linked Data Fragments)
+			- Download only what is needed
+
+
+#+LaTeX: \note{
+#+BEGIN_NOTES
+After reviewing the data of the experiments, we found out
+  - CPU usage is minimal
+  - Memory used is mostly the downloaded data, and it is implicitly bounded by dereferencing
+  - Query time was dominated by dereference, using async IO gave a free speedup
+as the idle wait was done in parallel, however it's not a panacea as you can be
+bounded by the amount of IRIs and also by you Internet connection
+
+For further optimizing retrieval, you should only retrieve the data you need,
+for this you can use simple SPARQL queries, or a lightweight server like the one
+Linked Data Fragments propose
+#+END_NOTES
+#+LaTeX: }
 
 * Questions
 * Extra
@@ -439,7 +509,7 @@ nodes it leads to considering the cost to reach them.
 
 ** TODO Evaluation - No parallelism
 *** TODO Experiments
-		Experiments are available on the repo
+		Available on the repo
 
 *** TODO Query 1
 # #+reveal_html: <img class="figure" src="graphics/q1.png"/>
