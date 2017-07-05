@@ -44,6 +44,9 @@
 		var dataRadius = 12;
 		var linkRadius = 50;
 
+		let params = new URLSearchParams(window.location.search)
+		let data = params.has('data') ? params.get('data') : "data/coauthor.json";
+
 		// Color and radius scales
 		var color = d3.scale.category20();
 
@@ -119,7 +122,7 @@
 		}
 
 
-		d3.json("data/coauthor.json", function(error, graph) {
+		d3.json(data, function(error, graph) {
 			if (error) throw error;
 			var link = svg
 			               .selectAll(".link")
