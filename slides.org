@@ -303,9 +303,9 @@ If you are interested on this bad behaviour, there's an example at the end
 *** Evaluating an Automaton query
 
 #+reveal_html: <div class="stretch">
-#+reveal_html:   <iframe data-src="coauthor.html" width="100%" height="100%"></iframe>
+#+reveal_html:   <iframe data-src="demo.html?data=data/coauthor-small.json" width="100%" height="100%"></iframe>
 #+reveal_html: </div>
-#+LaTeX: \href{http://localhost:8000/coauthor.html}{link}
+#+LaTeX: \href{http://localhost:8000/demo.html?data=data/coauthor-small.json}{link}
 
 *** Matching as a Search Problem
 		Matching resembles a search problem

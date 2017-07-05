@@ -70,13 +70,15 @@
 		}
 
 		function getColor(d) {
+			// Always index colors, this fixes the initial assignment
+			var c = color(d.type);
 			if (!d.expanded) return "#666";
 
+			// Exceptions
 			if (d.type==="publTitle") return "green";
 			if (d.type==="publTITLE") return "#6B8E23";
 			if (d.type==="authName") return "red";
 
-			var c = color(d.type);
 			return c;
 		}
 
