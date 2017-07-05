@@ -11,7 +11,7 @@
     {"id":  7, "name": "P3", "type": "Publ",     "neighF": [], "neighB": [], "expanded": false, "discovered": false},
     {"id":  8, "name": "P4", "type": "Publ",     "neighF": [], "neighB": [], "expanded": false, "discovered": false},
 
-    {"id":  9, "name":  "n", "type": "authName", "neighF": [], "neighB": [], "expanded": false, "discovered": false},
+    {"id":  9, "name":  "n", "type": "authNAME", "neighF": [], "neighB": [], "expanded": false, "discovered": false},
     {"id": 10, "name":  "n", "type": "authName", "neighF": [], "neighB": [], "expanded": false, "discovered": false},
     {"id": 11, "name":  "n", "type": "authName", "neighF": [], "neighB": [], "expanded": false, "discovered": false},
     {"id": 12, "name":  "n", "type": "authName", "neighF": [], "neighB": [], "expanded": false, "discovered": false},
