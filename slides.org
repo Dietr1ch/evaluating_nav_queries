@@ -546,14 +546,3 @@ Linked Data Fragments propose
 # #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/q1-40.pdf}
 
 * Thanks
-* Old                                                             :noexport:
-
-#+BEGIN_NOTES
-Imagine you are given a flash drive with the contents of the internet, but at
-the cost of not having internet anymore. Would that be useful?
-Great part of the value of the internet is on being able to access living
-information. Most of the information on that flash drive will become irrelevant
-or stale
-Databases face a similar problem, they don't usually have access to the outside
-world.
-#+END_NOTES
