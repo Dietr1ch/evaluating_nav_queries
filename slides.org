@@ -29,7 +29,7 @@
 #+REVEAL_SPEED: 2
 #+OPTIONS: reveal_slide_number:h.v
 
-# Adding plugings without their dependencies might break your slides
+# Adding plugins without their dependencies might break your slides
 #+REVEAL_EXTRA_JS: { src: 'plugin/math/math.js', async: true }, { src: 'plugin/zoom-js/zoom.js', async: true }
 #+REVEAL_PLUGINS: (highlight markdown notes)
 
@@ -301,7 +301,7 @@ If you are interested on this bad behavior, there's an example at the end
 *** Searching with an Automaton
 
 #+reveal_html: <div class="stretch">
-#+reveal_html: <iframe data-src="coauthor.html" width="100%" height="100%"></iframe>
+#+reveal_html:   <iframe data-src="coauthor.html" width="100%" height="100%"></iframe>
 #+reveal_html: </div>
 #+LaTeX: \href{http://localhost:8000/coauthor.html}{link}
 
@@ -370,14 +370,14 @@ nodes it leads to considering the cost to reach them.
 			- Stop if $1000$ answers are found
 			- Stop if $100000$ triples are retrieved
 			- Stop after $10$ minutes searching
-		- Ran on i5-4670 quad-core with 4GiB RAM
+		- Ran on i5-4670 quad-core with 4 GiB RAM
 		- Servers queried
 			- YAGO
 			- DBLP
 			- DBpedia
-			- LinkedMovie Database
+			- Linked Movie Database
 
-*** Sample query - CoAuthor
+*** Sample query - Coauthor
 #+reveal_html: <img class="figure" src="graphics/q1.png"/>
 #+LaTeX: \center\includegraphics[width=0.8\textwidth]{graphics/q1.pdf}
 
@@ -412,11 +412,17 @@ nodes it leads to considering the cost to reach them.
 
 * Questions
 * Extra
-** TODO Informed search is superior
-** TODO Heuristic optimization demo
-** TODO Evaluation
-*** TODO Experiments
-Experiments are available on the repo
+** Heuristic optimization demo
+*** A weird behaviour
+		Notice what happens when you just discovered an IRI that is a goal for a new
+		f-value level
+
+		- You can declare that IRI goal when you expand it's parent
+			- No need to expand that IRI yet
+		- A weird ordering appears
+			- Siblings of the goal's parent might lead to similar solutions (same $f$)
+			- But tie breaking prefers greater $g$, thus $h=0$ is preferred
+
 ** Paths prove relation
 *** Computing all of them seems pointless
 		Looking for all patterns that match can be too much
@@ -430,6 +436,19 @@ Experiments are available on the repo
 		 - Less or equal leads to infinite matches!
 		 - Is the data flawed?
 			 - On the internet you won't control it. You must avoid this
+
+** TODO Evaluation - No parallelism
+*** TODO Experiments
+		Experiments are available on the repo
+
+*** TODO Query 1
+# #+reveal_html: <img class="figure" src="graphics/q1.png"/>
+# #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/q1.pdf}
+
+** TODO Evaluation - Parallelism effect
+*** TODO Query 1 - P40
+# #+reveal_html: <img class="figure" src="graphics/q1-40.png"/>
+# #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/q1-40.pdf}
 
 * Thanks
 * Old                                                             :noexport:
