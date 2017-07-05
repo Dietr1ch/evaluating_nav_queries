@@ -16,7 +16,7 @@
 	}
 	.node circle.IRI {
 		stroke-width: 2px;
-		transition: fill 2s ease-in;
+		transition: fill 2s ease-out;
 	}
 	.node circle.Data {
 		stroke-width: 1.5px;
@@ -40,14 +40,12 @@
 		var width = 960;
 		var height = 600;
 
-		var authRadius = 12;
-		var publRadius = 10;
-		var nodeRadius = 5;
+		var iriRadius = 22;
+		var dataRadius = 12;
 		var linkRadius = 50;
 
 		// Color and radius scales
 		var color = d3.scale.category20();
-		var radius = d3.scale.sqrt().range([0, 6]);
 
 		var svg = d3.select("body").append("svg")
 		            .attr("width", width)
@@ -60,96 +58,69 @@
 		              .linkDistance(function(d) { return linkRadius; })
 		;
 
+		function isIri(d) {
+			return d.type[0]<='Z';
+		}
+
+		function getRadius(d) {
+			return isIri(d) ? iriRadius : dataRadius;
+		}
+
+		function getColor(d) {
+			if (!d.expanded) return "#666";
+
+			if (d.type==="publTitle") return "green";
+			if (d.type==="publTITLE") return "#6B8E23";
+			if (d.type==="authName") return "red";
+
+			var c = color(d.type);
+			return c;
+		}
+
+		function discover(n) {
+			if (n.expanded) return;
+			n.discovered = true;
+			d3.selectAll("circle")
+			  .filter(function(d){return d.id==n.id;})
+			  .attr("stroke", "#fff")
+			;
+			d3.selectAll("text")
+			  .filter(function(d){return d.id==n.id;})
+			  .attr("class", "Local")
+			;
+		}
+
+		function handleMouseClick(d, i) {
+			if (!d.discovered) return;
+			if (d.expanded) return;
+			d.expanded = true;
+			d3.select(this)
+			  .style("fill", getColor(d) )
+			;
+		}
+		function handleMouseOver(d, i) {
+			if (d.expanded) return;
+			d3.select(this)
+			  .attr("r", 4+getRadius(d))
+			;
+		}
+		function handleMouseOut(d, i) {
+			if (d.expanded) return;
+			d3.select(this)
+			  .attr("r", getRadius(d))
+			;
+		}
+		function handleTransitionEnd(d, i) {
+			d3.select(this)
+			  .style("stroke", "#000")
+			;
+			d.neighF.forEach(discover);
+			d.neighB.forEach(discover);
+		}
+
+
 		d3.json("data/coauthor.json", function(error, graph) {
 			if (error) throw error;
-
-			function tick() {
-				link
-				    .selectAll("line")
-				    .attr("x1", function(d) { return d.source.x; })
-				    .attr("y1", function(d) { return d.source.y; })
-				    .attr("x2", function(d) { return d.target.x; })
-				    .attr("y2", function(d) { return d.target.y; })
-				;
-				node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-			}
-
-			function isIri(d) {
-				if (d.type == "auth") return true;
-				if (d.type == "publ") return true;
-				return false;
-			}
-
-			function getRadius(d) {
-				if (d.type == "auth") return authRadius;
-				if (d.type == "publ") return publRadius;
-				return nodeRadius;
-			}
-			function getRadiusObj(d) {
-				return radius(getRadius(d));
-			}
-
-			function getColor(d) {
-				if (!d.expanded) return "#666";
-
-				var c = color(d.type);
-				if (d.type == "authName") {
-					c = "red";
-				}
-				else if (d.type == "publName") {
-					c = "green";
-				}
-				return c;
-			}
-
-			function discover(n) {
-				if (n.expanded) return;
-				n.discovered = true;
-				d3.selectAll("circle")
-				  .filter(function(d){return d.id==n.id;})
-				  .attr("stroke", "#fff")
-				;
-				d3.selectAll("text")
-				  .filter(function(d){return d.id==n.id;})
-				  .attr("class", "Local")
-				;
-			}
-			function handleMouseClick(d, i) {
-				if (!d.discovered) return;
-				if (d.expanded) return;
-				d.expanded = true;
-				d3.select(this)
-				  .style("fill", getColor(d) )
-				;
-			}
-			function handleMouseOver(d, i) {
-				if (d.expanded) return;
-				d3.select(this)
-				  .attr("r", radius(getRadius(d)+4))
-				;
-			}
-			function handleMouseOut(d, i) {
-				if (d.expanded) return;
-				d3.select(this)
-				  .attr("r", radius(getRadius(d)))
-				;
-			}
-			function handleTransitionEnd(d, i) {
-				d3.select(this)
-				  .style("stroke", "#000")
-				;
-				d.neighF.forEach(discover);
-				d.neighB.forEach(discover);
-			}
-
-
-			force
-			     .nodes(graph.nodes)
-			     .links(graph.links)
-			     .on("tick", tick)
-			     .start()
-			;
-
 			var link = svg
 			               .selectAll(".link")
 			               .data(graph.links)
@@ -161,7 +132,25 @@
 			    .append("line")
 			;
 
-			var node = svg
+			function tick() {
+				link
+				    .selectAll("line")
+				    .attr("x1", function(d) { return d.source.x; })
+				    .attr("y1", function(d) { return d.source.y; })
+				    .attr("x2", function(d) { return d.target.x; })
+				    .attr("y2", function(d) { return d.target.y; })
+				;
+				nodes.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+			}
+			force
+			     .nodes(graph.nodes)
+			     .links(graph.links)
+			     .on("tick", tick)
+			     .start()
+			;
+
+
+			var nodes = svg
 			              .selectAll(".node")
 			              .data(graph.nodes)
 			              .enter().append("g")
@@ -169,11 +158,12 @@
 			              .call(force.drag)
 			;
 
-			var s0 = node
-			    .filter(function(d) { return d.type == "auth"; })
+			var iris = nodes.filter(isIri);
+			var data = nodes.filter(function(d) { return !isIri(d); });
+			var s0 = iris
 			    .append("circle")
 			    .attr("class", "IRI")
-			    .attr("r",     getRadiusObj)
+			    .attr("r",     iriRadius)
 			    .style("fill", getColor)
 			    .on("click",         handleMouseClick)
 			    .on("mouseover",     handleMouseOver)
@@ -183,41 +173,17 @@
 			    .filter(function(d) { return d.discovered; })
 			;
 
-			node
-			    .filter(function(d) { return d.type == "publ"; })
-			    .append("circle")
-			    .attr("class", "IRI")
-			    .attr("r",     getRadiusObj)
-			    .style("fill", getColor)
-			    .on("click",          handleMouseClick)
-			    .on("mouseover",      handleMouseOver)
-			    .on("mouseout",       handleMouseOut)
-			    .on("transitionend",  handleTransitionEnd)
-			;
-
-			node
-			    .filter(function(d) { return d.type == "authName"; })
+			data
 			    .append("circle")
 			    .attr("class", "data")
-			    .attr("r",     getRadiusObj)
-			    .style("fill", getColor)
-			    .on("click",     handleMouseClick)
-			    .on("mouseover", handleMouseOver)
-			    .on("mouseout",  handleMouseOut)
-			;
-			node
-			    .filter(function(d) { return d.type == "publName"; })
-			    .append("circle")
-			    .attr("class", "data")
-			    .attr("r",     getRadiusObj)
+			    .attr("r",     dataRadius)
 			    .style("fill", getColor)
 			    .on("click",     handleMouseClick)
 			    .on("mouseover", handleMouseOver)
 			    .on("mouseout",  handleMouseOut)
 			;
 
-
-			node
+			nodes
 			    .append("text")
 			    .attr("dy", ".35em")
 			    .attr("text-anchor", "middle")
@@ -228,7 +194,7 @@
 				;
 
 			// Link nodes
-			node.each(function(n) {
+			nodes.each(function(n) {
 				if (isIri(n)) {
 					link.each(function(l) {
 						if (l.source == n) {
