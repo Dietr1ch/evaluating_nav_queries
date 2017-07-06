@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+	svg {
+		display: flex;
+		margin: auto;
+	}
+	.link line {
+		stroke: #777;
+		stroke-width: 2px;
+	}
+
+	.node circle {
+		stroke: #fff;
+		fill: #f0f;
+	}
+	.node circle.IRI {
+		stroke-width: 2px;
+		transition: fill 2s ease-out;
+	}
+	.node circle.Data {
+		stroke-width: 1.5px;
+	}
+
+	.node text {
+		stroke: none;
+		fill: none;
+		font: 10px sans-serif;
+		pointer-events: none;
+		user-select: none;
+	}
+	.node text.Local {
+		fill: #fff;
+	}
+
+</style>
+<body>
+	<script src="js/d3.v3.min.js"></script>
+	<script>
+		var width = 960;
+		var height = 600;
+
+		var iriRadius = 22;
+		var dataRadius = 12;
+		var linkRadius = 50;
+
+		let params = new URLSearchParams(window.location.search)
+		let data = params.has('data') ? params.get('data') : "data/coauthor.json";
+
+		// Color and radius scales
+		var color = d3.scale.category20();
+
+		var svg = d3.select("body").append("svg")
+		            .attr("width", width)
+		            .attr("height", height);
+
+		var force = d3.layout
+		              .force()
+		              .size([width, height])
+		              .charge(-400)
+		              .linkDistance(function(d) { return linkRadius; })
+		;
+
+		function isIri(d) {
+			return d.type[0]<='Z';
+		}
+
+		function getRadius(d) {
+			return isIri(d) ? iriRadius : dataRadius;
+		}
+
+		function getColor(d) {
+			// Always index colors, this fixes the initial assignment
+			var c = color(d.type);
+			if (!d.expanded) return "#666";
+
+			// Exceptions
+			if (d.type==="authName") return "green";
+			if (d.type==="authNAME") return "#6B8E23";
+			if (d.type==="publTitle") return "red";
+
+			return c;
+		}
+
+		function discover(n) {
+			if (n.expanded) return;
+			n.discovered = true;
+			d3.selectAll("circle")
+			  .filter(function(d){return d.id==n.id;})
+			  .attr("stroke", "#fff")
+			;
+			d3.selectAll("text")
+			  .filter(function(d){return d.id==n.id;})
+			  .attr("class", "Local")
+			;
+		}
+
+		function handleMouseClick(d, i) {
+			if (!d.discovered) return;
+			if (d.expanded) return;
+			d.expanded = true;
+			d3.select(this)
+			  .style("fill", getColor(d) )
+			;
+		}
+		function handleMouseOver(d, i) {
+			if (d.expanded) return;
+			d3.select(this)
+			  .attr("r", 4+getRadius(d))
+			;
+		}
+		function handleMouseOut(d, i) {
+			if (d.expanded) return;
+			d3.select(this)
+			  .attr("r", getRadius(d))
+			;
+		}
+		function handleTransitionEnd(d, i) {
+			d3.select(this)
+			  .style("stroke", "#000")
+			;
+			d.neighF.forEach(discover);
+			d.neighB.forEach(discover);
+		}
+
+
+		d3.json(data, function(error, graph) {
+			if (error) throw error;
+			var link = svg
+			               .selectAll(".link")
+			               .data(graph.links)
+			               .enter().append("g")
+			               .attr("class", "link")
+			;
+
+			link
+			    .append("line")
+			;
+
+			function tick() {
+				link
+				    .selectAll("line")
+				    .attr("x1", function(d) { return d.source.x; })
+				    .attr("y1", function(d) { return d.source.y; })
+				    .attr("x2", function(d) { return d.target.x; })
+				    .attr("y2", function(d) { return d.target.y; })
+				;
+				nodes.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+			}
+			force
+			     .nodes(graph.nodes)
+			     .links(graph.links)
+			     .on("tick", tick)
+			     .start()
+			;
+
+
+			var nodes = svg
+			              .selectAll(".node")
+			              .data(graph.nodes)
+			              .enter().append("g")
+			              .attr("class", "node")
+			              .call(force.drag)
+			;
+
+			var iris = nodes.filter(isIri);
+			var data = nodes.filter(function(d) { return !isIri(d); });
+			var s0 = iris
+			    .append("circle")
+			    .attr("class", "IRI")
+			    .attr("r",     iriRadius)
+			    .style("fill", getColor)
+			    .on("click",         handleMouseClick)
+			    .on("mouseover",     handleMouseOver)
+			    .on("mouseout",      handleMouseOut)
+			    .on("transitionend", handleTransitionEnd)
+			    // Mark expanded nodes
+			    .filter(function(d) { return d.discovered; })
+			;
+
+			data
+			    .append("circle")
+			    .attr("class", "data")
+			    .attr("r",     dataRadius)
+			    .style("fill", getColor)
+			    .on("click",     handleMouseClick)
+			    .on("mouseover", handleMouseOver)
+			    .on("mouseout",  handleMouseOut)
+			;
+
+			nodes
+			    .append("text")
+			    .attr("dy", ".35em")
+			    .attr("text-anchor", "middle")
+			    .text(function(d) { return d.name; })
+			    // Mark expanded nodes
+			    .filter(function(d) { return d.expanded; })
+			    .style("stroke", "#fff")
+				;
+
+			// Link nodes
+			nodes.each(function(n) {
+				if (isIri(n)) {
+					link.each(function(l) {
+						if (l.source == n) {
+								n.neighF.push(l.target);
+								l.target.neighB.push(n);
+						}
+					});
+				}
+			});
+
+			s0.each(function(d) {discover(d);})
+		});
+	</script>
+</body>
