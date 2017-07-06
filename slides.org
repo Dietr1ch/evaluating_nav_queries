@@ -11,8 +11,7 @@
 
 * Setup                                                            :noexport:
 #+SEQ_TODO: TODO REVIEW | DONE
-#+REVEAL_ROOT: http://localhost:8000
-#+REVEAL_HEAD_PREAMBLE: <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js'></script>
+#+REVEAL_ROOT: .
 
 # ##Local Variables:
 # ##eval: (add-hook 'after-save-hook (org-reveal-export-to-html))
@@ -302,7 +301,7 @@ If you are interested on this bad behaviour, there's an example at the end
 
 *** Evaluating an Automaton query
 
-#+reveal_html: <img class="figure" src="graphics/coauth-name.png"/>
+#+reveal_html: <img width="80%" class="figure" src="graphics/coauth-name.png"/>
 #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/coauth-name.png}
 
 #+reveal_html: <div class="stretch">
@@ -546,3 +545,18 @@ Linked Data Fragments propose
 # #+LaTeX: \center\includegraphics[width=\textwidth]{graphics/q1-40.pdf}
 
 * Thanks
+** Config
+*** Theme setup
+	#+reveal_html: <p>
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+	#+reveal_html:   <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+	#+reveal_html: </p>
