@@ -1,0 +1,9 @@
+* Evaluating Navigational RDF Queries over the Web
+This repo holds the presentation shown on Hypertext17 about our paper on
+evaluating queries on Linked Data.
+
+The slides are hosted [[https://dietr1ch.github.io/evaluating_nav_queries/][here]]
+
+* Other links
+** TODO Project source
+** TODO Experiments showcase
